@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
 use App\Form\ProductForm;
+use App\Helper\ArrayHelper;
+use App\Repository\ProductRepository;
 use App\Service\Product\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -16,14 +18,25 @@ class ProductController extends AbstractController
 
     public function __construct(
         private readonly ProductService $productService,
+        private readonly ProductRepository $productRepository,
     ) {
     }
 
 
+    #[Route('/products', name: 'app_list_products', methods: ['GET'])]
+    public function index(): JsonResponse
+    {
+        $products = $this->productRepository->findAll();
+
+        $records = ArrayHelper::map($products, fn(Product $product) => $product->toArray());
+
+        return new JsonResponse($records);
+    }
+
     #[Route('/products', name: 'app_create_product', methods: ['POST'])]
     public function create(
         #[MapRequestPayload] ProductForm $form,
-    ): Response
+    ): JsonResponse
     {
         $createdProduct = $this->productService->create($form);
 

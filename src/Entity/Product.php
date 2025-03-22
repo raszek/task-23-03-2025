@@ -65,11 +65,9 @@ class Product
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getUpdatedAt(): ?DateTimeImmutable
@@ -77,11 +75,9 @@ class Product
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
-
-        return $this;
     }
 
     /**
@@ -92,28 +88,26 @@ class Product
         return $this->categories;
     }
 
-    public function addCategory(Category $category): static
+    public function addCategory(Category $category): void
     {
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
         }
-
-        return $this;
     }
 
-    public function removeCategory(Category $category): static
+    public function removeCategory(Category $category): void
     {
         $this->categories->removeElement($category);
-
-        return $this;
     }
 
     public function toArray(): array
     {
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'price' => $this->price,
+            'categories' => $this->getCategories()->map(fn(Category $category) => $category->getCode())->toArray(),
         ];
     }
 
