@@ -33,6 +33,12 @@ class ProductController extends AbstractController
         return new JsonResponse($records);
     }
 
+    #[Route('/products/{id}', name: 'app_view_product', methods: ['GET'])]
+    public function view(Product $product): JsonResponse
+    {
+        return new JsonResponse($product->toArray());
+    }
+
     #[Route('/products', name: 'app_create_product', methods: ['POST'])]
     public function create(
         #[MapRequestPayload] ProductForm $form,

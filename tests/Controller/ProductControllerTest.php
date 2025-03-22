@@ -105,6 +105,42 @@ class ProductControllerTest extends WebTestCase
         $this->assertEquals(['house'], $response[1]['categories']);
     }
 
+    /** @test */
+    public function user_can_view_product()
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+
+        $toolCategory = CategoryFactory::createOne([
+            'code' => 'tools'
+        ]);
+
+        $houseCategory = CategoryFactory::createOne([
+            'code' => 'house'
+        ]);
+
+        $product = ProductFactory::createOne([
+            'name' => 'Hammer',
+            'price' => '12.12',
+            'categories' => [$toolCategory, $houseCategory]
+        ]);
+
+        $client->request(
+            'GET',
+            '/api/products/' . $product->getId(),
+            server: ['ACCEPT' => 'application/json'],
+        );
+
+        $this->assertResponseIsSuccessful();
+
+        $response = JsonHelper::decode($client->getResponse()->getContent());
+
+        $this->assertArrayHasKey('id', $response);
+        $this->assertEquals('Hammer', $response['name']);
+        $this->assertEquals('12.12', $response['price']);
+        $this->assertEquals(['tools', 'house'], $response['categories']);
+    }
+
     private function productRepository(): ProductRepository
     {
         return $this->getService(ProductRepository::class);
