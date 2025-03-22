@@ -9,6 +9,7 @@ use App\Repository\ProductRepository;
 use App\Service\Product\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -47,6 +48,14 @@ class ProductController extends AbstractController
         $createdProduct = $this->productService->create($form);
 
         return new JsonResponse($createdProduct->toArray(), status: 201);
+    }
+
+    #[Route('/products/{id}', name: 'app_remove_product', methods: ['DELETE'])]
+    public function remove(Product $product): Response
+    {
+        $this->productService->remove($product);
+
+        return new Response(status: 204);
     }
 
 }

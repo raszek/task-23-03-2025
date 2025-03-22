@@ -141,6 +141,32 @@ class ProductControllerTest extends WebTestCase
         $this->assertEquals(['tools', 'house'], $response['categories']);
     }
 
+    /** @test */
+    public function user_can_remove_product()
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+
+        $product = ProductFactory::createOne([
+            'name' => 'Hammer',
+            'price' => '12.12',
+            'categories' => []
+        ]);
+
+        $client->request(
+            'DELETE',
+            '/api/products/' . $product->getId(),
+        );
+
+        $this->assertResponseStatusCodeSame(204);
+
+        $removedProduct = $this->productRepository()->findOneBy([
+            'id' => $product->getId()
+        ]);
+
+        $this->assertNull($removedProduct);
+    }
+
     private function productRepository(): ProductRepository
     {
         return $this->getService(ProductRepository::class);

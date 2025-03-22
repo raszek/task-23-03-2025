@@ -37,4 +37,11 @@ readonly class ProductService
 
         return $product;
     }
+
+    public function remove(Product $product): void
+    {
+        $this->entityManager->remove($product);
+
+        $this->entityManager->flush();
+    }
 }
