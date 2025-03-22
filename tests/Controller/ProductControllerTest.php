@@ -57,6 +57,60 @@ class ProductControllerTest extends WebTestCase
     }
 
     /** @test */
+    public function user_can_edit_product()
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+
+        $houseCategory = CategoryFactory::createOne([
+            'code' => 'house'
+        ]);
+
+        CategoryFactory::createOne([
+            'code' => 'tools'
+        ]);
+
+        $product = ProductFactory::createOne([
+            'name' => 'Toothbrush',
+            'price' => '2.2',
+            'categories' => [$houseCategory]
+        ]);
+
+        $content = JsonHelper::encode([
+            'name' => 'Hammer',
+            'price' => '12.12',
+            'categories' => [
+                'tools',
+                'house'
+            ]
+        ]);
+
+        $client->request(
+            'PUT',
+            '/api/products/' . $product->getId(),
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: $content,
+        );
+
+        $this->assertResponseStatusCodeSame(200);
+
+        $response = JsonHelper::decode($client->getResponse()->getContent());
+
+        $this->assertArrayHasKey('id', $response);
+        $this->assertEquals('Hammer', $response['name']);
+        $this->assertEquals('12.12', $response['price']);
+
+        $updatedProduct = $this->productRepository()->findOneBy([
+            'id' => $product->getId(),
+        ]);
+
+        $this->assertNotNull($updatedProduct);
+        $this->assertEquals('12.12', $updatedProduct->getPrice());
+
+        $this->assertCount(2, $updatedProduct->getCategories());
+    }
+
+    /** @test */
     public function user_can_list_products()
     {
         $client = static::createClient();

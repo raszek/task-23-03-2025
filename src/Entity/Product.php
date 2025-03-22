@@ -55,9 +55,19 @@ class Product
         return $this->name;
     }
 
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
     public function getPrice(): ?string
     {
         return $this->price;
+    }
+
+    public function setPrice(string $price): void
+    {
+        $this->price = $price;
     }
 
     public function getCreatedAt(): ?DateTimeImmutable

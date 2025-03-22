@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Form\ProductForm;
 use App\Helper\ArrayHelper;
 use App\Repository\ProductRepository;
+use App\Service\Product\ProductEditorFactory;
 use App\Service\Product\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,6 +49,20 @@ class ProductController extends AbstractController
         $createdProduct = $this->productService->create($form);
 
         return new JsonResponse($createdProduct->toArray(), status: 201);
+    }
+
+    #[Route('/products/{id}', name: 'app_update_product', methods: ['PUT'])]
+    public function update(
+        Product $product,
+        #[MapRequestPayload] ProductForm $form,
+        ProductEditorFactory $factory
+    ): JsonResponse
+    {
+        $productEditor = $factory->create($product);
+
+        $productEditor->edit($form);
+
+        return new JsonResponse($product->toArray());
     }
 
     #[Route('/products/{id}', name: 'app_remove_product', methods: ['DELETE'])]
