@@ -1,6 +1,7 @@
 ## Running docker
 
 ```bash
+cd docker
 docker compose up -d
 ```
 
@@ -9,18 +10,19 @@ docker compose up -d
 ```bash
 sudo docker compose exec app bash
 ```
+2. Wait a while for database connection
 
-2. In container run migrations
+3. In container run migrations
 ```
 bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-3. Run fixtures
+4. Run fixtures
 ```
 bin/console doctrine:fixtures:load
 ```
 
-4. Do manual tests
+5. Do manual tests
 ```http request
 ### List products
 GET http://localhost:8000/api/products
@@ -54,6 +56,17 @@ Content-Type: application/json
 
 ### Remove product
 DELETE http://localhost:8000/api/products/9
+```
+
+## Available product categories
+```
+tools,
+house,
+children,
+sport,
+company,
+cars,
+shopping
 ```
 
 ## PHPUnit
