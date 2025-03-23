@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use App\Trait\UpdatedTimestamps;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,6 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class Product
 {
+
+    use UpdatedTimestamps;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -112,22 +116,11 @@ class Product
 
     public function toArray(): array
     {
-
         return [
             'id' => $this->id,
             'name' => $this->name,
             'price' => $this->price,
             'categories' => $this->getCategories()->map(fn(Category $category) => $category->getCode())->toArray(),
         ];
-    }
-
-    #[ORM\PrePersist]
-    #[ORM\PreUpdate]
-    public function updatedTimestamps(): void
-    {
-        $this->setUpdatedAt(new DateTimeImmutable());
-        if ($this->getCreatedAt() === null) {
-            $this->setCreatedAt(new DateTimeImmutable());
-        }
     }
 }
