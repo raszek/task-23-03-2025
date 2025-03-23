@@ -20,6 +20,42 @@ bin/console doctrine:migrations:migrate --no-interaction
 bin/console doctrine:fixtures:load
 ```
 
+4. Do manual tests
+```http request
+### List products
+GET http://localhost:8000/api/products
+
+### View product
+GET http://localhost:8000/api/products/5
+
+### Create product
+POST http://localhost:8000/api/products
+Content-Type: application/json
+
+{
+"name": "Toilet",
+"price": "32.32",
+"categories": [
+"house"
+]
+}
+
+### Update product
+PUT http://localhost:8000/api/products/9
+Content-Type: application/json
+
+{
+"name": "Toilet",
+"price": "12.12",
+"categories": [
+"house"
+]
+}
+
+### Remove product
+DELETE http://localhost:8000/api/products/9
+```
+
 ## PHPUnit
 1. Connect to container
 ```bash
