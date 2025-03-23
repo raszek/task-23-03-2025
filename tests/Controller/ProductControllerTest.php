@@ -221,7 +221,6 @@ class ProductControllerTest extends WebTestCase
         $this->assertNull($removedProduct);
     }
 
-
     /** @test */
     public function user_cannot_create_product_if_category_does_not_exist()
     {
@@ -244,6 +243,53 @@ class ProductControllerTest extends WebTestCase
         );
 
         $this->assertResponseStatusCodeSame(422);
+    }
+
+    /** @test */
+    public function user_can_edit_product_price()
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+
+        $houseCategory = CategoryFactory::createOne([
+            'code' => 'house'
+        ]);
+
+        $product = ProductFactory::createOne([
+            'name' => 'Toothbrush',
+            'price' => '2.2',
+            'categories' => [$houseCategory]
+        ]);
+
+        $content = JsonHelper::encode([
+            'name' => 'Toothbrush',
+            'price' => '4.4',
+            'categories' => [
+                'house'
+            ]
+        ]);
+
+        $client->request(
+            'PUT',
+            '/api/products/' . $product->getId(),
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: $content,
+        );
+
+        $this->assertResponseStatusCodeSame(200);
+
+        $response = JsonHelper::decode($client->getResponse()->getContent());
+
+        $this->assertArrayHasKey('id', $response);
+        $this->assertEquals('Toothbrush', $response['name']);
+        $this->assertEquals('4.4', $response['price']);
+
+        $updatedProduct = $this->productRepository()->findOneBy([
+            'id' => $product->getId(),
+        ]);
+
+        $this->assertNotNull($updatedProduct);
+        $this->assertEquals('4.40', $updatedProduct->getPrice());
     }
 
     private function productRepository(): ProductRepository
