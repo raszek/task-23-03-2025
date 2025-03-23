@@ -10,4 +10,9 @@ class ArrayHelper
         return array_map($callback, $records);
     }
 
+    public static function filter(array $records, callable $callback): array
+    {
+        return array_values(array_filter($records, $callback));
+    }
+
 }

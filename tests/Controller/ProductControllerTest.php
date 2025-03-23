@@ -221,6 +221,31 @@ class ProductControllerTest extends WebTestCase
         $this->assertNull($removedProduct);
     }
 
+
+    /** @test */
+    public function user_cannot_create_product_if_category_does_not_exist()
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+
+        $content = JsonHelper::encode([
+            'name' => 'Hammer',
+            'price' => '12.12',
+            'categories' => [
+                'tools',
+            ]
+        ]);
+
+        $client->request(
+            'POST',
+            '/api/products',
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: $content,
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
     private function productRepository(): ProductRepository
     {
         return $this->getService(ProductRepository::class);

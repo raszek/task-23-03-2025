@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Validator\Categories;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class ProductForm
@@ -19,6 +20,7 @@ class ProductForm
          * @var string[]
          */
         #[Assert\NotBlank()]
+        #[Categories]
         public array $categories = [],
     ) {
     }

@@ -28,7 +28,7 @@ class ProductController extends AbstractController
     #[Route('/products', name: 'app_list_products', methods: ['GET'])]
     public function index(): JsonResponse
     {
-        $products = $this->productRepository->findAll();
+        $products = $this->productRepository->listProducts();
 
         $records = ArrayHelper::map($products, fn(Product $product) => $product->toArray());
 
