@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\Category;
+use DateTimeImmutable;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -20,8 +21,8 @@ final class CategoryFactory extends PersistentProxyObjectFactory
     {
         return [
             'code' => self::faker()->text(10),
-            'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'updatedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'createdAt' => DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'updatedAt' => DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
         ];
     }
 

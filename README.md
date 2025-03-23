@@ -15,6 +15,11 @@ sudo docker compose exec app bash
 bin/console doctrine:migrations:migrate --no-interaction
 ```
 
+3. Run fixtures
+```
+bin/console doctrine:fixtures:load
+```
+
 ## PHPUnit
 1. Connect to container
 ```bash
